@@ -10,7 +10,6 @@ model = joblib.load("model/crop_model.pkl")
 encoder = joblib.load("model/label_encoder.pkl")
 
 
-#request
 class CropInput(BaseModel):
     N: float
     P: float
@@ -20,12 +19,13 @@ class CropInput(BaseModel):
     ph: float
     rainfall: float
 
-#API
+
 @app.get("/")
 def home():
     return {
         "message": "Crop Recommendation API is Running"
     }
+
 
 @app.post("/predict")
 def predict(data: CropInput):
@@ -41,24 +41,39 @@ def predict(data: CropInput):
     }])
 
     prediction = model.predict(sample)[0]
-    probability = model.predict_proba(sample)[0]
+    probabilities = model.predict_proba(sample)[0]
 
-    crop = encoder.inverse_transform([prediction])[0]
+    recommendation = encoder.inverse_transform([prediction])[0]
 
-    confidence = float(np.max(probability) * 100)
+    confidence = round(float(np.max(probabilities) * 100), 2)
 
-    top3_index = np.argsort(probability)[::-1][:3]
+    top3_idx = np.argsort(probabilities)[::-1][:3]
 
     top3 = []
 
-    for idx in top3_index:
+    for idx in top3_idx:
+
         top3.append({
-            "crop": encoder.inverse_transform([idx])[0],
-            "confidence": round(float(probability[idx] * 100), 2)
+            "crop": encoder.inverse_transform([idx])[0].title(),
+            "confidence": round(float(probabilities[idx] * 100), 2)
         })
 
     return {
-        "recommendation": crop,
-        "confidence": round(confidence,2),
-        "top3": top3
+
+        "recommendation": recommendation.title(),
+
+        "confidence": confidence,
+
+        "top3": top3,
+
+        "input": {
+            "N": data.N,
+            "P": data.P,
+            "K": data.K,
+            "temperature": data.temperature,
+            "humidity": data.humidity,
+            "ph": data.ph,
+            "rainfall": data.rainfall
+        }
+
     }

@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const AI_URL = "http://127.0.0.1:8000";
+const AI_URL = "http://127.0.0.1:8001";
 
 async function predictCrop(data) {
     const response = await axios.post(
