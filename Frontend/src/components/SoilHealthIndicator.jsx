@@ -1,4 +1,5 @@
 import { evaluateSoilHealth } from "../utils/soilHealth";
+import { IconSprout, StatusDot } from "./Icons";
 
 const statusStyles = {
     good: "text-emerald-700",
@@ -6,38 +7,37 @@ const statusStyles = {
     poor: "text-red-700",
 };
 
-const BLOCK_COUNT = 18;
-
 export default function SoilHealthIndicator({ input, cropName }) {
     const health = evaluateSoilHealth(input, cropName);
 
     if (!health) return null;
 
     const { overallScore, rating, metrics } = health;
-    const filledBlocks = Math.round((overallScore / 100) * BLOCK_COUNT);
 
     return (
-        <div className="mt-10 bg-gradient-to-br from-brand-50/80 to-emerald-50/50 rounded-2xl p-6 lg:p-8 border border-green-100/80">
-            <h3 className="text-lg font-bold text-slate-800 mb-4">
-                🌱 Soil Health
+        <div className="mt-10 bg-slate-50 rounded-xl p-6 lg:p-8 border border-slate-200">
+            <h3 className="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <IconSprout className="w-5 h-5 text-brand-700" />
+                Soil Health
             </h3>
 
-            <p className={`text-base font-bold mb-4 ${rating.color}`}>
-                {rating.emoji} {rating.label} ({overallScore}%)
-            </p>
-
-            <div className="font-mono text-lg leading-none tracking-tight select-none mb-6">
-                {Array.from({ length: BLOCK_COUNT }, (_, i) => (
-                    <span
-                        key={i}
-                        className={i < filledBlocks ? "text-brand-600" : "text-slate-300"}
-                    >
-                        {i < filledBlocks ? "█" : "░"}
-                    </span>
-                ))}
+            <div className="flex items-center gap-2 mb-4">
+                <StatusDot level={rating.level} />
+                <p className={`text-base font-bold ${rating.color}`}>
+                    {rating.label} ({overallScore}%)
+                </p>
             </div>
 
-            <div className="space-y-2.5 rounded-xl bg-white/60 border border-white/80 p-4">
+            <div className="mb-6">
+                <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                    <div
+                        className={`h-full rounded-full transition-all duration-700 ${rating.bg}`}
+                        style={{ width: `${overallScore}%` }}
+                    />
+                </div>
+            </div>
+
+            <div className="space-y-2.5 rounded-xl bg-white border border-slate-200 p-4">
                 {metrics.map((metric) => (
                     <div
                         key={metric.key}
@@ -46,8 +46,9 @@ export default function SoilHealthIndicator({ input, cropName }) {
                         <span className="text-sm font-semibold text-slate-700">
                             {metric.label}
                         </span>
-                        <span className={`text-sm font-bold tabular-nums ${statusStyles[metric.level]}`}>
-                            {metric.icon} {metric.text}
+                        <span className={`text-sm font-bold tabular-nums flex items-center gap-2 ${statusStyles[metric.level]}`}>
+                            <StatusDot level={metric.level} />
+                            {metric.text}
                         </span>
                     </div>
                 ))}

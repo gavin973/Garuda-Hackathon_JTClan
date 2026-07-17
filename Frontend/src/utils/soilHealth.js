@@ -42,16 +42,16 @@ function scoreValue(value, [min, max]) {
 }
 
 function getStatus(score, labels) {
-    if (score >= 85) return { level: "good", text: labels.good, icon: "✅" };
-    if (score >= 60) return { level: "medium", text: labels.medium, icon: "⚠" };
-    return { level: "poor", text: labels.poor, icon: "❌" };
+    if (score >= 85) return { level: "good", text: labels.good };
+    if (score >= 60) return { level: "medium", text: labels.medium };
+    return { level: "poor", text: labels.poor };
 }
 
 function getOverallRating(score) {
-    if (score >= 90) return { label: "Excellent", emoji: "🟢", color: "text-emerald-600", bg: "bg-emerald-500", ring: "ring-emerald-200" };
-    if (score >= 75) return { label: "Good", emoji: "🟢", color: "text-brand-600", bg: "bg-brand-500", ring: "ring-brand-200" };
-    if (score >= 60) return { label: "Fair", emoji: "🟡", color: "text-amber-600", bg: "bg-amber-500", ring: "ring-amber-200" };
-    return { label: "Poor", emoji: "🔴", color: "text-red-600", bg: "bg-red-500", ring: "ring-red-200" };
+    if (score >= 90) return { label: "Excellent", level: "excellent", color: "text-emerald-600", bg: "bg-emerald-500" };
+    if (score >= 75) return { label: "Good", level: "good", color: "text-brand-600", bg: "bg-brand-500" };
+    if (score >= 60) return { label: "Fair", level: "fair", color: "text-amber-600", bg: "bg-amber-500" };
+    return { label: "Poor", level: "poor", color: "text-red-600", bg: "bg-red-500" };
 }
 
 export function evaluateSoilHealth(input, cropName) {

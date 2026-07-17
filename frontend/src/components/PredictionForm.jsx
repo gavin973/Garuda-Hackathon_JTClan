@@ -1,17 +1,26 @@
 import { useState, useRef, useEffect } from "react";
 import api from "../services/api";
+import {
+    IconCloudRain,
+    IconDroplet,
+    IconFlask,
+    IconLeaf,
+    IconSprout,
+    IconSun,
+    IconThermometer,
+} from "./Icons";
 
 const soilFields = [
-    { icon: "🌿", label: "Nitrogen (N)", name: "N", min: 0, max: 140, unit: "mg/kg" },
-    { icon: "🧪", label: "Phosphorus (P)", name: "P", min: 0, max: 145, unit: "mg/kg" },
-    { icon: "🍃", label: "Potassium (K)", name: "K", min: 0, max: 205, unit: "mg/kg" },
-    { icon: "⚗", label: "Soil pH", name: "ph", min: 0, max: 14, step: 0.1, unit: "" },
+    { Icon: IconSprout, label: "Nitrogen (N)", name: "N", min: 0, max: 140, unit: "mg/kg" },
+    { Icon: IconFlask, label: "Phosphorus (P)", name: "P", min: 0, max: 145, unit: "mg/kg" },
+    { Icon: IconLeaf, label: "Potassium (K)", name: "K", min: 0, max: 205, unit: "mg/kg" },
+    { Icon: IconFlask, label: "Soil pH", name: "ph", min: 0, max: 14, step: 0.1, unit: "" },
 ];
 
 const envFields = [
-    { icon: "🌡", label: "Temperature", name: "temperature", min: 0, max: 50, unit: "°C" },
-    { icon: "💧", label: "Humidity", name: "humidity", min: 0, max: 100, unit: "%" },
-    { icon: "🌧", label: "Rainfall", name: "rainfall", min: 0, max: 300, unit: "mm" },
+    { Icon: IconThermometer, label: "Temperature", name: "temperature", min: 0, max: 50, unit: "°C" },
+    { Icon: IconDroplet, label: "Humidity", name: "humidity", min: 0, max: 100, unit: "%" },
+    { Icon: IconCloudRain, label: "Rainfall", name: "rainfall", min: 0, max: 300, unit: "mm" },
 ];
 
 const presets = [
@@ -22,6 +31,7 @@ const presets = [
 
 function RangeField({ item, value, onChange }) {
     const ref = useRef(null);
+    const { Icon } = item;
 
     useEffect(() => {
         if (!ref.current) return;
@@ -32,11 +42,13 @@ function RangeField({ item, value, onChange }) {
     return (
         <div className="group">
             <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-semibold text-slate-700 flex items-center gap-1.5">
-                    <span>{item.icon}</span>
+                <span className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                    <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-slate-100 text-slate-600">
+                        <Icon className="w-4 h-4" />
+                    </span>
                     {item.label}
                 </span>
-                <span className="text-sm font-bold text-brand-700 bg-brand-50 px-2.5 py-0.5 rounded-lg tabular-nums">
+                <span className="text-sm font-bold text-brand-700 bg-brand-50 px-2.5 py-0.5 rounded-md tabular-nums border border-brand-100">
                     {value}{item.unit && ` ${item.unit}`}
                 </span>
             </div>
@@ -51,8 +63,8 @@ function RangeField({ item, value, onChange }) {
                 onChange={onChange}
             />
             <div className="flex justify-between mt-1">
-                <span className="text-[11px] text-slate-400">{item.min}</span>
-                <span className="text-[11px] text-slate-400">{item.max}</span>
+                <span className="text-[11px] text-slate-400 tabular-nums">{item.min}</span>
+                <span className="text-[11px] text-slate-400 tabular-nums">{item.max}</span>
             </div>
         </div>
     );
@@ -100,13 +112,13 @@ export default function PredictionForm({ setResult }) {
     };
 
     return (
-        <section className="relative bg-white rounded-3xl border border-green-100/80 shadow-xl shadow-green-900/5 overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-brand-600 via-brand-400 to-brand-600 animate-shimmer" />
+        <section className="relative bg-white rounded-2xl border border-slate-200 shadow-lg shadow-slate-900/5 overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-brand-700" />
 
             <div className="p-8 lg:p-12">
                 <div className="text-center max-w-xl mx-auto">
                     <span className="section-label">AI Prediction</span>
-                    <h2 className="mt-4 text-3xl sm:text-4xl font-extrabold tracking-tight">
+                    <h2 className="mt-4 text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
                         Crop Recommendation
                     </h2>
                     <p className="mt-4 text-slate-500 leading-relaxed">
@@ -121,7 +133,7 @@ export default function PredictionForm({ setResult }) {
                             key={preset.label}
                             type="button"
                             onClick={() => applyPreset(preset.values)}
-                            className="px-4 py-2 text-sm font-semibold rounded-full border border-brand-200 text-brand-700 bg-brand-50/50 hover:bg-brand-100 transition-colors"
+                            className="px-4 py-2 text-sm font-semibold rounded-lg border border-slate-200 text-slate-700 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 transition-colors"
                         >
                             {preset.label}
                         </button>
@@ -130,8 +142,10 @@ export default function PredictionForm({ setResult }) {
 
                 <div className="mt-10 grid lg:grid-cols-2 gap-10">
                     <div>
-                        <h3 className="flex items-center gap-2 text-lg font-bold text-slate-800 mb-6">
-                            <span className="w-8 h-8 rounded-lg bg-brand-100 flex items-center justify-center text-sm">🧪</span>
+                        <h3 className="flex items-center gap-2.5 text-base font-bold text-slate-800 mb-6 pb-3 border-b border-slate-100">
+                            <span className="w-8 h-8 rounded-lg bg-brand-50 text-brand-700 flex items-center justify-center">
+                                <IconFlask className="w-4 h-4" />
+                            </span>
                             Soil Nutrients
                         </h3>
                         <div className="space-y-7">
@@ -147,8 +161,10 @@ export default function PredictionForm({ setResult }) {
                     </div>
 
                     <div>
-                        <h3 className="flex items-center gap-2 text-lg font-bold text-slate-800 mb-6">
-                            <span className="w-8 h-8 rounded-lg bg-brand-100 flex items-center justify-center text-sm">🌤</span>
+                        <h3 className="flex items-center gap-2.5 text-base font-bold text-slate-800 mb-6 pb-3 border-b border-slate-100">
+                            <span className="w-8 h-8 rounded-lg bg-brand-50 text-brand-700 flex items-center justify-center">
+                                <IconSun className="w-4 h-4" />
+                            </span>
                             Environment
                         </h3>
                         <div className="space-y-7">
@@ -168,15 +184,15 @@ export default function PredictionForm({ setResult }) {
                     type="button"
                     onClick={handleSubmit}
                     disabled={loading}
-                    className="mt-12 w-full relative overflow-hidden rounded-2xl bg-gradient-to-r from-brand-700 to-brand-500 text-white text-lg font-bold py-5 shadow-lg shadow-brand-700/25 hover:shadow-brand-700/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                    className="mt-12 w-full relative overflow-hidden rounded-xl bg-brand-700 text-white text-base font-bold py-4 shadow-sm hover:bg-brand-800 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0"
                 >
                     {loading ? (
                         <span className="flex items-center justify-center gap-3">
                             <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            AI is analyzing your soil data...
+                            Analyzing soil data...
                         </span>
                     ) : (
-                        "🌱 Predict Best Crop"
+                        "Predict Best Crop"
                     )}
                 </button>
             </div>
